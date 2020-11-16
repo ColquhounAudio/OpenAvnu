@@ -175,6 +175,14 @@ EtherPort *AKeeper::pPort = nullptr;
 
 int main(int argc, char **argv)
 {
+	/* Require interface */
+
+  	if( argc < 2 ) {
+ 		printf( "Interface name required\n" );
+ 		print_usage( argv[0] );
+ 		return -1;
+ 	}
+
 	AKeeper k(argv[1]);
 
 	PortInit_t portInit;
@@ -411,7 +419,7 @@ int main(int argc, char **argv)
 #else
 	#ifdef RPI
 		std::shared_ptr<LinuxTimestamperGeneric>  timestamper = std::make_shared<LinuxTimestamperGeneric>();
-		std::shared_ptr<LinuxThreadFactory> pulseThreadFactory = 
+		std::shared_ptr<LinuxThreadFactory> pulseThreadFactory =
 	 	 std::make_shared<LinuxThreadFactory>();
 		timestamper->PulseThreadFactory(pulseThreadFactory);
 	#else
@@ -445,7 +453,7 @@ int main(int argc, char **argv)
 	k.pPort = new EtherPort(&portInit);
 
 	GPTP_LOG_INFO("smoothRateChange: %s", (k.pPort->SmoothRateChange() ? "true" : "false"));
-	
+
 	if(use_config_file)
 	{
 		GptpIniParser iniParser(config_file_path);
@@ -492,7 +500,7 @@ int main(int argc, char **argv)
 			// Set the delay_mechanism from the ini file valid values are E2E or P2P
 			k.pPort->setDelayMechanism(V2_E2E);
 
-			// Allows for an initial setting of unicast send and receive 
+			// Allows for an initial setting of unicast send and receive
 			// ip addresses if the destination platform doesn't have
 			// socket support for the send and receive address registration api
 			k.pPort->UnicastSendNodes(iniParser.UnicastSendNodes());
